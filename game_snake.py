@@ -87,14 +87,8 @@ def game_over():
 
 def spawn_fruit():
     global fruit_position
-    while True:
-        fruit_position = [random.randrange(1, (screen_x//10 - 1) * 10),
-                        random.randrange(1, (screen_y//10 - 1) * 10)]
-        if (
-            abs(fruit_position[0] - snake_position[0]) > 20 or
-            abs[fruit_position[1] - snake_position[1] > 20]
-        ):
-            break
+    fruit_position = [random.randrange(1, (screen_x//10 - 1) * 10),
+                      random.randrange(1, (screen_y//10 - 1) * 10)]
 
 # main program
 while True:
