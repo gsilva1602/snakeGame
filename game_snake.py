@@ -87,8 +87,14 @@ def game_over():
 
 def spawn_fruit():
     global fruit_position
-    fruit_position = [random.randrange(1, (screen_x//10) * 10),
-                      random.randrange(1, (screen_y//10) * 10)]
+    while True:
+        fruit_position = [random.randrange(1, (screen_x//10 - 1) * 10),
+                        random.randrange(1, (screen_y//10 - 1) * 10)]
+        if (
+            abs(fruit_position[0] - snake_position[0]) > 20 or
+            abs[fruit_position[1] - snake_position[1] > 20]
+        ):
+            break
 
 # main program
 while True:
@@ -128,39 +134,35 @@ while True:
         snake_position[0] += 10    
     
     # snake body growing up
-    
 
-    game_window.fill(0)
+    game_window.fill(black)
 
     for pos in snake_body:
-        snake = pygame.draw.rect(game_window, green, pygame.Rect(pos[0], pos[1], 10, 10))
+        pygame.draw.rect(game_window, green, pygame.Rect(pos[0], pos[1], 10, 10))
 
+    # draw fruit
     fruit = pygame.draw.rect(game_window, white, pygame.Rect(fruit_position[0], fruit_position[1], 10, 10))
     
+    # colision with fruit
+    snake_body_rects = [pygame.Rect(pos[0], pos[1], 10, 10) for pos in snake_body]
     snake_body.insert(0, list(snake_position))
-    if snake.colliderect(fruit):
+
+    if any(snake_rect.colliderect(fruit) for snake_rect in snake_body_rects):
         spawn_fruit()
         score += 10
+        snake_body.append(list(snake_position))
     else:
         snake_body.pop()
+    
 
-    
-    #if pos[0] == fruit_position[0] and pos[1] == fruit_position[1]:
-    #    spawn_fruit()
-    #    score += 10
-    #else:
-    #    snake_body.pop()
-    
     # game over conditions
-    if (snake_position[0] < 0 or snake_position[0] >= screen_x):
-        game_over()
-    
-    if (snake_position[1] < 0 or snake_position[1] >= screen_y):
+    if (snake_position[0] < 0 or snake_position[0] >= screen_x or 
+        snake_position[1] < 0 or snake_position[1] >= screen_y):
         game_over()
 
     # touching the snake body
-    for snake in snake_body[1:]:
-        if snake_position[0] == snake[0] and snake_position[1] == snake[1]:
+    for snake_rect in snake_body_rects[1:]:
+        if snake_position[0] == snake_rect[0] and snake_position[1] == snake_rect[1]:
             game_over()
         
     # displaying score countinuously
